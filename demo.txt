@@ -1,3 +1,5 @@
 This is my first line in the document,
 
 git is the best dvcs tool ever existed.
+
+Adding 3rd line into the .txt file.
