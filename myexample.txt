@@ -1,1 +1,25 @@
-Hello World!
+public static void uploadMoneyOrder() throws IOException {
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+    LocalDateTime now = LocalDateTime.now();
+    String tempFile = "//MIRSRVQAAPP01.QAJPAY.COM//MoneyOrders//Deposits//DepositV2_Automated_" + dtf.format(now) + ".txt";
+    File oldFile = new File("//MIRSRVQAAPP01.QAJPAY.COM//MoneyOrders//Archive//01102023DepositV2_jb_01101.txt");
+    File newFile = new File(tempFile);
+    try (BufferedReader reader = new BufferedReader(new FileReader(oldFile));
+         PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(tempFile, true)))) {
+        String line;
+        writer.println("HEADER");
+        while ((line = reader.readLine()) != null) {
+            String changeMoId = dtf.format(now);
+            String digitsToChange = line.substring(0, 12);
+            String endLine = line.substring(0, 6);
+            if (endLine.equals("FOOTER")) {
+                writer.println("FOOTER               0270900");
+                break;
+            }
+            writer.println(line.replace(digitsToChange, changeMoId));
+        }
+        newFile.renameTo(newFile);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
